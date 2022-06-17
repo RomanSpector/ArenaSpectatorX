@@ -118,9 +118,6 @@
     <NormalTexture file="Interface\Buttons\WHITE8X8" parentKey="NormalTexture">
       <Color r="0.155" g="0.155" b="0.155" a="0.9" />
     </NormalTexture>
-    <!-- <HighlightTexture file="Interface\Buttons\WHITE8X8" alphaMode="ADD" parentKey="HighlightTexture">
-      <Color r="0.155" g="0.155" b="0.155" a="0.3" />
-    </HighlightTexture> -->
     <Layers>
       <Layer level="HIGHLIGHT">
         <Texture name="$parentLeft" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Left-Hi">
@@ -136,7 +133,7 @@
             <AbsDimension x="32" y="60" />
           </Size>
           <Anchors>
-            <Anchor point="TOPRIGHT" x="3" y="3" />
+            <Anchor point="TOPRIGHT" x="-21" y="3" />
           </Anchors>
         </Texture>
         <Texture name="$parentMiddle" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Mid-Hi">
