@@ -1,0 +1,88 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+  <Texture name="ArenaSpectatorXSpecializationIconTemplate" virtual="true">
+    <TexCoords left="0.08" right="0.92" top="0.08" topbottom="0.92" />
+    <Size x="15" y="15" />
+  </Texture>
+
+  <Button name="ArenaSpectatorXButtonTemplate" virtual="true">
+    <NormalTexture file="Interface\Buttons\WHITE8X8" parentKey="NormalTexture">
+      <Color r="0.155" g="0.155" b="0.155" a="0.8" />
+    </NormalTexture>
+    <HighlightTexture file="Interface\Buttons\WHITE8X8" parentKey="HighlightTexture">
+      <Color r="0.155" g="0.155" b="0.155" a="0.6" />
+    </HighlightTexture>
+  </Button>
+
+  <FontString name="ArenaSpectatorXButtonFontTemplate" inherits="GameFontNormalSmall" virtual="true">
+    <Anchors>
+      <Anchor point="CENTER" />
+    </Anchors>
+    <Color r="0.655" g="0.655" b="0.655" a="1" />
+  </FontString>
+
+  <Button name="ArenaSpectatorXArenaTypeButtonTemplate" inherits="ArenaSpectatorXButtonTemplate" hidden="true" virtual="true">
+    <Size x="320" y="99" />
+    <Layers>
+      <Layer level="ARTWORK">
+        <FontString name="$parentArenaTypeText" inherits="ArenaSpectatorXButtonFontTemplate" parentKey="ArenaTypeText" />
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnClick>
+         SelectGossipOption(self.id);
+      </OnClick>
+    </Scripts>
+  </Button>
+
+  <Button name="ArenaSpectatorXArenaNumButtonTemplate" inherits="ArenaSpectatorXButtonTemplate" hidden="true" virtual="true">
+    <Size x="320" y="18" />
+    <Layers>
+      <Layer level="ARTWORK">
+        <FontString name="$parentRatingText" inherits="ArenaSpectatorXButtonFontTemplate" parentKey="RatingText" />
+        <Texture name="$parentSpecializationIcon1" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon1">
+          <Anchor point="RIGHT" relativeTo="$parentRatingText" relativePoint="LEFT" x="10" y="0" />
+        </Texture>
+        <Texture name="$parentSpecializationIcon2" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon2">
+          <Anchor point="RIGHT" relativeTo="$parentSpecializationIcon1" relativePoint="LEFT" x="10" y="0" />
+        </Texture>
+        <Texture name="$parentSpecializationIcon3" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon3">
+          <Anchor point="RIGHT" relativeTo="$parentSpecializationIcon2" relativePoint="LEFT" x="10" y="0" />
+        </Texture>
+        <Texture name="$parentSpecializationIcon4" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon4">
+          <Anchor point="LEFT" relativeTo="$parentRatingText" relativePoint="RIGHT" x="10" y="0" />
+        </Texture>
+        <Texture name="$parentSpecializationIcon5" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon5">
+          <Anchor point="LEFT" relativeTo="$parentSpecializationIcon4" relativePoint="RIGHT" x="10" y="0" />
+        </Texture>
+        <Texture name="$parentSpecializationIcon6" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon6">
+          <Anchor point="LEFT" relativeTo="$parentSpecializationIcon5" relativePoint="RIGHT" x="10" y="0" />
+        </Texture>
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnMouseDown>
+        self.RatingText:SetPoint("CENTER", 0, 1);
+        self.RatingText:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE");
+
+        for i = 1, 6 do
+            self["SpecializationIcon" .. i]:SetSize(14, 14);
+        end
+      </OnMouseDown>
+      <OnMouseUp>
+        self.RatingText:SetPoint("CENTER");
+        self.RatingText:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE");
+
+        for i = 1, 6 do
+            self["SpecializationIcon" .. i]:SetSize(15, 15);
+        end
+      </OnMouseUp>
+      <OnClick>
+        SelectGossipOption(self.id);
+      </OnClick>
+    </Scripts>
+  </Button>
+
+</Ui>

@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: Arena|cff758799SpectatorX|r
+## Version: 1.0
+## Author: December|RomanSpector
+## Notes-ruRU: |cff00ff00Info: /asx
+
+ArenaSpectatorX.xml
+ArenaSpectatorX.lua
