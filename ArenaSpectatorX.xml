@@ -4,21 +4,51 @@
 
   <Texture name="ArenaSpectatorXSpecializationIconTemplate" virtual="true">
     <TexCoords left="0.08" right="0.92" top="0.08" topbottom="0.92" />
-    <Size x="15" y="15" />
+    <Size x="24" y="24" />
   </Texture>
 
   <Button name="ArenaSpectatorXButtonTemplate" virtual="true">
     <NormalTexture file="Interface\Buttons\WHITE8X8" parentKey="NormalTexture">
-      <Color r="0.155" g="0.155" b="0.155" a="0.8" />
+      <Color r="0.155" g="0.155" b="0.155" a="0.9" />
     </NormalTexture>
-    <HighlightTexture file="Interface\Buttons\WHITE8X8" parentKey="HighlightTexture">
-      <Color r="0.155" g="0.155" b="0.155" a="0.6" />
-    </HighlightTexture>
+    <!-- <HighlightTexture file="Interface\Buttons\WHITE8X8" alphaMode="ADD" parentKey="HighlightTexture">
+      <Color r="0.155" g="0.155" b="0.155" a="0.3" />
+    </HighlightTexture> -->
+    <Layers>
+      <Layer level="HIGHLIGHT">
+        <Texture name="$parentLeft" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Left-Hi">
+          <Size>
+            <AbsDimension x="32" y="60" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" x="-3" y="3" />
+          </Anchors>
+        </Texture>
+        <Texture name="$parentRight" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Right-Hi">
+          <Size>
+            <AbsDimension x="32" y="60" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOPRIGHT" x="3" y="3" />
+          </Anchors>
+        </Texture>
+        <Texture name="$parentMiddle" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Mid-Hi">
+          <Size>
+            <AbsDimension x="32" y="60" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0" />
+            <Anchor point="TOPRIGHT" relativeTo="$parentRight" relativePoint="TOPLEFT" x="0" y="0" />
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
   </Button>
 
-  <FontString name="ArenaSpectatorXButtonFontTemplate" inherits="GameFontNormalSmall" virtual="true">
+  <FontString name="ArenaSpectatorXButtonFontTemplate" font="Fonts\MORPHEUS.ttf" virtual="true">
+    <FontHeight val="14" />
     <Anchors>
-      <Anchor point="CENTER" />
+      <Anchor point="CENTER" x="-9" y="0" />
     </Anchors>
     <Color r="0.655" g="0.655" b="0.655" a="1" />
   </FontString>
@@ -32,51 +62,69 @@
     </Layers>
     <Scripts>
       <OnClick>
-         SelectGossipOption(self.id);
+         SelectGossipOption(self.arenaID);
       </OnClick>
     </Scripts>
   </Button>
 
   <Button name="ArenaSpectatorXArenaNumButtonTemplate" inherits="ArenaSpectatorXButtonTemplate" hidden="true" virtual="true">
-    <Size x="320" y="18" />
+    <Size x="320" y="38" />
     <Layers>
-      <Layer level="ARTWORK">
+      <Layer level="OVERLAY">
         <FontString name="$parentRatingText" inherits="ArenaSpectatorXButtonFontTemplate" parentKey="RatingText" />
         <Texture name="$parentSpecializationIcon1" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon1">
-          <Anchor point="RIGHT" relativeTo="$parentRatingText" relativePoint="LEFT" x="10" y="0" />
+          <Anchors>
+            <Anchor point="RIGHT" relativeTo="$parentRatingText" relativePoint="LEFT" x="-8" y="0" />
+          </Anchors>
         </Texture>
         <Texture name="$parentSpecializationIcon2" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon2">
-          <Anchor point="RIGHT" relativeTo="$parentSpecializationIcon1" relativePoint="LEFT" x="10" y="0" />
+          <Anchors>
+            <Anchor point="RIGHT" relativeTo="$parentSpecializationIcon1" relativePoint="LEFT" x="-6" y="0" />
+          </Anchors>
         </Texture>
         <Texture name="$parentSpecializationIcon3" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon3">
-          <Anchor point="RIGHT" relativeTo="$parentSpecializationIcon2" relativePoint="LEFT" x="10" y="0" />
+          <Anchors>
+            <Anchor point="RIGHT" relativeTo="$parentSpecializationIcon2" relativePoint="LEFT" x="-6" y="0" />
+          </Anchors>
         </Texture>
         <Texture name="$parentSpecializationIcon4" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon4">
-          <Anchor point="LEFT" relativeTo="$parentRatingText" relativePoint="RIGHT" x="10" y="0" />
+          <Anchors>
+            <Anchor point="LEFT" relativeTo="$parentRatingText" relativePoint="RIGHT" x="8" y="0" />
+          </Anchors>
         </Texture>
         <Texture name="$parentSpecializationIcon5" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon5">
-          <Anchor point="LEFT" relativeTo="$parentSpecializationIcon4" relativePoint="RIGHT" x="10" y="0" />
+          <Anchors>
+            <Anchor point="LEFT" relativeTo="$parentSpecializationIcon4" relativePoint="RIGHT" x="6" y="0" />
+          </Anchors>
         </Texture>
         <Texture name="$parentSpecializationIcon6" inherits="ArenaSpectatorXSpecializationIconTemplate" parentKey="SpecializationIcon6">
-          <Anchor point="LEFT" relativeTo="$parentSpecializationIcon5" relativePoint="RIGHT" x="10" y="0" />
+          <Anchors>
+            <Anchor point="LEFT" relativeTo="$parentSpecializationIcon5" relativePoint="RIGHT" x="6" y="0" />
+          </Anchors>
         </Texture>
       </Layer>
     </Layers>
     <Scripts>
       <OnMouseDown>
-        self.RatingText:SetPoint("CENTER", 0, 1);
-        self.RatingText:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE");
+        local fontName, fontSize, fontFlags = self.RatingText:GetFont();
+        self.RatingText:SetPoint("CENTER", -9, 1); 
+        self.RatingText:SetFont(fontName, fontSize - 1, fontFlags);
 
         for i = 1, 6 do
-            self["SpecializationIcon" .. i]:SetSize(14, 14);
+            local icon = self["SpecializationIcon" .. i];
+            local size = icon:GetSize() - 1;
+            self["SpecializationIcon" .. i]:SetSize(size, size);
         end
       </OnMouseDown>
       <OnMouseUp>
-        self.RatingText:SetPoint("CENTER");
-        self.RatingText:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE");
+        local fontName, fontSize, fontFlags = self.RatingText:GetFont();
+        self.RatingText:SetPoint("CENTER", -9, 0); 
+        self.RatingText:SetFont(fontName, fontSize + 1, fontFlags)
 
         for i = 1, 6 do
-            self["SpecializationIcon" .. i]:SetSize(15, 15);
+            local icon = self["SpecializationIcon" .. i];
+            local size = icon:GetSize() + 1;
+            self["SpecializationIcon" .. i]:SetSize(size, size);
         end
       </OnMouseUp>
       <OnClick>
@@ -85,4 +133,52 @@
     </Scripts>
   </Button>
 
+  <ScrollFrame name="ArenaSpectatorXScrollFrameTemplate" inherits="FauxScrollFrameTemplate" virtual="true">
+    <Size x="300" y="403" />
+    <Layers>
+      <Layer level="BACKGROUND">
+        <Texture parentKey="Background" file="Interface\AddOns\ArenaSpectatorX\texture\UI-Background-Marble" setAllPoints="true" />
+      </Layer>
+      <Layer level="ARTWORK">
+        <Texture file="Interface\ClassTrainerFrame\UI-ClassTrainer-ScrollBar" parentKey="scrollBarArtTop">
+          <Size>
+            <AbsDimension x="3" y="128" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
+              <Offset>
+                <AbsDimension x="-3" y="5" />
+              </Offset>
+            </Anchor>
+          </Anchors>
+          <TexCoords left="0" right="0.46875" top="0.0" bottom="1.0" />
+        </Texture>
+        <Texture file="Interface\ClassTrainerFrame\UI-ClassTrainer-ScrollBar" parentKey="scrollBarArtBottom">
+          <Size>
+            <AbsDimension x="3" y="128" />
+          </Size>
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
+              <Offset>
+                <AbsDimension x="-3" y="-2" />
+              </Offset>
+            </Anchor>
+          </Anchors>
+          <TexCoords left="0.53125" right="1.0" top="0.0" bottom="1.0" />
+        </Texture>
+      </Layer>
+    </Layers>
+    <ScrollChild>
+      <Frame name="$parentScrollChildFrame" parentKey="scrollChild">
+        <Size>
+          <AbsDimension x="300" y="334" />
+        </Size>
+      </Frame>
+    </ScrollChild>
+    <Scripts>
+      <OnVerticalScroll>
+      FauxScrollFrame_OnVerticalScroll(self, offset, FRIENDS_FRAME_IGNORE_HEIGHT, ArenaSpectatorXGossipGreeting_Update);
+      </OnVerticalScroll>
+    </Scripts>
+  </ScrollFrame>
 </Ui>

@@ -17,7 +17,7 @@
 ---@field SpecializationIcon6 ArenaSpectatorXSpecializationIconTemplate
 
 
-local MAX_ARENA_SPECTATOR_BUTTONS = 20;
+local MAX_ARENA_SPECTATOR_BUTTONS = 10;
 
 local SPECIALIZATION_ICONS = {
     PWarrior  = "Interface\\Icons\\Ability_Warrior_DefensiveStance",
@@ -52,55 +52,13 @@ local SPECIALIZATION_ICONS = {
     SHunt     = "Interface\\Icons\\Ability_Hunter_SwiftStrike",
 }
 
-local _GossipGreeting = CreateFrame("Frame", nil, GossipGreetingScrollFrame);
-_GossipGreeting:SetSize(322, 403);
-_GossipGreeting:SetPoint("TOPLEFT");
-local bg = _GossipGreeting:CreateTexture(nil,"ARTWORK");
-bg:SetTexture("Interface\\AddOns\\CompactRaidFrame\\Media\\FrameGeneral\\UI-Background-Marble");
-bg:SetAllPoints();
+local ArenaSpectatorXGossipGreeting = CreateFrame("ScrollFrame", "ArenaSpectatorXGossipGreeting", GossipGreetingScrollFrame, "ArenaSpectatorXScrollFrameTemplate");
+ArenaSpectatorXGossipGreeting:SetPoint("TOPLEFT");
 
-local Refresh = CreateFrame("Button", "GossipRefresh", GossipFrame, "UIPanelButtonTemplate");
-Refresh:SetSize(78, 22);
-Refresh:SetPoint("TOP", 0, -50);
-Refresh:SetText("Обновить");
-Refresh:SetScript("OnClick",function(self)
-    SelectGossipOption(self.id);
-    self:Disable();
-    local timeSinceUpdate = 0;
-    self:SetScript("OnUpdate", function(this, elapsede)
-        timeSinceUpdate = timeSinceUpdate + elapsede;
-        if timeSinceUpdate > 0.5 then
-            timeSinceUpdate = 0;
-            this:Enable();
-            this:SetScript("OnUpdate", nil);
-        end
-    end)
-end)
-Refresh:Hide();
-
-local Prev = CreateFrame("Button", "GossipPrev", GossipFrame, "UIPanelButtonTemplate");
-Prev:SetSize(33,22);
-Prev:SetPoint("TOPRIGHT", Refresh, "TOPLEFT", -3, 0);
-Prev:SetText("Назад");
-Prev:SetScript("OnClick",function(self) SelectGossipOption(self.id) end);
-Prev:Hide();
-
-local Next = CreateFrame("Button", "GossipNext", GossipFrame, "UIPanelButtonTemplate");
-Next:SetSize(33,22);
-Next:SetPoint("TOPLEFT", Refresh, "TOPRIGHT", 3, 0);
-Next:SetText("Вперед");
-Next:SetScript("OnClick", function(self) SelectGossipOption(self.id) end);
-Next:Hide();
-
-local Back = CreateFrame("Button", "GossipBack", GossipFrame, "UIPanelButtonTemplate");
-Back:SetSize(53,22);
-Back:SetPoint("RIGHT", Refresh, "LEFT", -24, 0);
-Back:SetText("Назад");
-Back:Hide();
-Back:SetScript("OnClick", function(self) SelectGossipOption(self.id) end);
+DynamicScrollFrame_CreateButtons(ArenaSpectatorXGossipGreeting, "ArenaSpectatorXArenaNumButtonTemplate", 38)
 
 local function CreateButton(i)
-    local button = CreateFrame("Button", (i and "GossipNewButton"..i), _GossipGreeting);
+    local button = CreateFrame("Button", (i and "GossipNewButton"..i), ArenaSpectatorXGossipGreeting);
 
     button:SetNormalTexture("Interface\\Buttons\\WHITE8X8");
     button:GetNormalTexture():SetVertexColor(.155, .155, .155, 0.8);
@@ -121,23 +79,11 @@ local function CreateButton(i)
     local function OnMouseDown(self)
         self.text:SetPoint("CENTER", 0, 1);
         self.text:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE");
-        for k = 1, 6 do
-            local icon = self["icon"..k];
-            if icon then
-                icon:SetSize(14, 14);
-            end
-        end
     end
 
     local function OnMouseUp(self)
         self.text:SetPoint("CENTER");
         self.text:SetFont("Fonts\\FRIZQT__.TTF",11,"OUTLINE");
-        for k = 1, 6 do
-            local icon = self["icon"..k];
-            if icon then
-                icon:SetSize(15, 15);
-            end
-        end
     end
 
     button:SetScript("OnMouseDown", OnMouseDown);
@@ -146,61 +92,82 @@ local function CreateButton(i)
     return button;
 end
 
+local ARENA_TEAM_INFO = {}
+
+local function OnClick(self)
+    wipe(ARENA_TEAM_INFO);
+    SelectGossipOption(self.id)
+    ArenaSpectatorXGossipGreeting_Update();
+end
+
+local Refresh = CreateFrame("Button", "GossipRefresh", GossipFrame, "UIPanelButtonTemplate");
+Refresh:SetSize(78, 22);
+Refresh:SetPoint("TOP", 0, -50);
+Refresh:SetText("Обновить");
+Refresh:SetScript("OnClick",function(self)
+    SelectGossipOption(self.id);
+    ArenaSpectatorXGossipGreeting_Update();
+    self:Disable();
+    local timeSinceUpdate = 0;
+    self:SetScript("OnUpdate", function(this, elapsede)
+        timeSinceUpdate = timeSinceUpdate + elapsede;
+        if timeSinceUpdate > 0.5 then
+            timeSinceUpdate = 0;
+            this:Enable();
+            this:SetScript("OnUpdate", nil);
+        end
+    end)
+end)
+Refresh:Hide();
+
+local Prev = CreateFrame("Button", "GossipPrev", GossipFrame, "UIPanelButtonTemplate");
+Prev:SetSize(33,22);
+Prev:SetPoint("TOPRIGHT", Refresh, "TOPLEFT", -3, 0);
+Prev:SetText("Назад");
+Prev:SetScript("OnClick", OnClick);
+Prev:Hide();
+
+local Next = CreateFrame("Button", "GossipNext", GossipFrame, "UIPanelButtonTemplate");
+Next:SetSize(33,22);
+Next:SetPoint("TOPLEFT", Refresh, "TOPRIGHT", 3, 0);
+Next:SetText("Вперед");
+Next:SetScript("OnClick", OnClick);
+Next:Hide();
+
+local Back = CreateFrame("Button", "GossipBack", GossipFrame, "UIPanelButtonTemplate");
+Back:SetSize(53,22);
+Back:SetPoint("RIGHT", Refresh, "LEFT", -24, 0);
+Back:SetText("Назад");
+Back:Hide();
+Back:SetScript("OnClick", OnClick);
+
 local Arena1v1Button = CreateButton();
 Arena1v1Button:SetSize(320, 99);
 Arena1v1Button:SetPoint("TOPLEFT",1,-1);
 Arena1v1Button:SetText("( 1 против 1 )");
-Arena1v1Button:SetScript("OnClick", function(self) SelectGossipOption(self.id) end);
+Arena1v1Button:SetScript("OnClick", OnClick);
 Arena1v1Button:Hide();
 
 local Arena2v2Button = CreateButton();
 Arena2v2Button:SetSize(320, 99);
 Arena2v2Button:SetPoint("TOPLEFT", Arena1v1Button, "BOTTOMLEFT", 0, -1);
 Arena2v2Button:SetText("( 2 против 2 )");
-Arena2v2Button:SetScript("OnClick", function(self) SelectGossipOption(self.id) end);
+Arena2v2Button:SetScript("OnClick", OnClick);
 Arena2v2Button:Hide();
 
 local Arena3v3Button = CreateButton();
 Arena3v3Button:SetSize(320, 99);
 Arena3v3Button:SetPoint("TOPLEFT", Arena2v2Button, "BOTTOMLEFT", 0, -1);
 Arena3v3Button:SetText("( 3 против 3 )");
-Arena3v3Button:SetScript("OnClick", function(self) SelectGossipOption(self.id) end);
+Arena3v3Button:SetScript("OnClick", OnClick);
 Arena3v3Button:Hide();
 
-local ArenaSolOQButton = CreateButton();
-ArenaSolOQButton:SetSize(320, 99);
-ArenaSolOQButton:SetPoint("TOPLEFT", Arena3v3Button, "BOTTOMLEFT", 0, -1);
-ArenaSolOQButton:SetText("( SoloQ )");
-ArenaSolOQButton:SetScript("OnClick", function(self) SelectGossipOption(self.id) end);
-ArenaSolOQButton:Hide();
-
-local offset = 1;
-
-for numericButton = 1, MAX_ARENA_SPECTATOR_BUTTONS do
-    local button = CreateButton(numericButton);
-    button:SetSize(320, 18);
-    button:SetPoint("TOPLEFT", 1, -offset);
-    button:SetScript("OnClick",function(self) SelectGossipOption(self.id) end);
-    button:Hide();
-
-    for index = 1, 6 do
-        local ClassIcon = button:CreateTexture(nil, "OVERLAY");
-        ClassIcon:SetTexCoord(.08, .92, .08, .92);
-        ClassIcon:SetSize(15,15);
-        button["icon"..index] = ClassIcon;
-    end
-
-    local padding = 20;
-
-    button.icon1:SetPoint("TOPLEFT",  button.text,  "TOPLEFT",  -padding, 2);
-    button.icon2:SetPoint("TOPLEFT",  button.icon1, "TOPLEFT",  -padding, 0);
-    button.icon3:SetPoint("TOPLEFT",  button.icon2, "TOPLEFT",  -padding, 0);
-    button.icon4:SetPoint("TOPRIGHT", button.text,  "TOPRIGHT",  padding, 2);
-    button.icon5:SetPoint("TOPRIGHT", button.icon4, "TOPRIGHT",  padding, 0);
-    button.icon6:SetPoint("TOPRIGHT", button.icon5, "TOPRIGHT",  padding, 0);
-
-    offset = offset + 20;
-end
+local ArenaSoloQButton = CreateButton();
+ArenaSoloQButton:SetSize(320, 99);
+ArenaSoloQButton:SetPoint("TOPLEFT", Arena3v3Button, "BOTTOMLEFT", 0, -1);
+ArenaSoloQButton:SetText("( SoloQ )");
+ArenaSoloQButton:SetScript("OnClick", OnClick);
+ArenaSoloQButton:Hide();
 
 local function razbit(text)
     local tbl = {}
@@ -210,25 +177,34 @@ local function razbit(text)
     return tbl
 end
 
-local data = {}
-local function update()
-    sort(data,function(a,b) return (a[1][1] + a[2][1]) > (b[1][1] + b[2][1]) end)
+function ArenaSpectatorXGossipGreeting_Update()
+    sort(ARENA_TEAM_INFO,function(a,b) return (a[1][1] + a[2][1]) > (b[1][1] + b[2][1]) end)
+    local numArenaTeams = MAX_ARENA_SPECTATOR_BUTTONS;
+    local arenaTeamIndex = 0;
+    local offset = FauxScrollFrame_GetOffset(ArenaSpectatorXGossipGreeting);
+    local button, arenaInfo;
 
-    for i=1, MAX_ARENA_SPECTATOR_BUTTONS do
-        local b = _G["GossipNewButton" .. i]
-        local d = data[i]
-        if d then
-            b.icon1:SetTexture(SPECIALIZATION_ICONS[d[1][2][1]])
-            b.icon2:SetTexture(SPECIALIZATION_ICONS[d[1][2][2]])
-            b.icon3:SetTexture(SPECIALIZATION_ICONS[d[1][2][3]])
-            b.text:SetText("["..d[1][1].."] vs ["..d[2][1].."]")
-            b.icon4:SetTexture(SPECIALIZATION_ICONS[d[2][2][1]])
-            b.icon5:SetTexture(SPECIALIZATION_ICONS[d[2][2][2]])
-            b.icon6:SetTexture(SPECIALIZATION_ICONS[d[2][2][3]])
-            b.id = d.id
-            b:Show()
+    for i = 1, MAX_ARENA_SPECTATOR_BUTTONS do
+        arenaInfo = ARENA_TEAM_INFO[i];
+        arenaTeamIndex = i + offset;
+        button = _G["ArenaSpectatorXGossipGreetingButton"..i];
+        if ( arenaTeamIndex > numArenaTeams or not arenaInfo ) then
+            button:Hide();
+        else
+            button:Show();
+            button.SpecializationIcon1:SetTexture(SPECIALIZATION_ICONS[arenaInfo[1][2][1]]);
+            button.SpecializationIcon2:SetTexture(SPECIALIZATION_ICONS[arenaInfo[1][2][2]]);
+            button.SpecializationIcon3:SetTexture(SPECIALIZATION_ICONS[arenaInfo[1][2][3]]);
+            button.RatingText:SetText("["..arenaInfo[1][1].."] vs ["..arenaInfo[2][1].."]")
+            button.SpecializationIcon4:SetTexture(SPECIALIZATION_ICONS[arenaInfo[2][2][1]]);
+            button.SpecializationIcon5:SetTexture(SPECIALIZATION_ICONS[arenaInfo[2][2][2]]);
+            button.SpecializationIcon6:SetTexture(SPECIALIZATION_ICONS[arenaInfo[2][2][3]]);
+
+            button.arenaID = arenaInfo.id;
         end
     end
+
+    FauxScrollFrame_Update(ArenaSpectatorXGossipGreeting, numArenaTeams, MAX_ARENA_SPECTATOR_BUTTONS, 38, nil, nil, nil, nil, nil, nil, true);
 end
 
 local ARENA_SPECTATOR_BUTTONS =
@@ -240,7 +216,7 @@ local ARENA_SPECTATOR_BUTTONS =
     Arena1v1Button;
     Arena2v2Button;
     Arena3v3Button;
-    ArenaSolOQButton;
+    ArenaSoloQButton;
 }
 
 local ARENA_SPECTATOR_ARRENA_BUTTONS =
@@ -248,22 +224,15 @@ local ARENA_SPECTATOR_ARRENA_BUTTONS =
     Arena1v1Button;
     Arena2v2Button;
     Arena3v3Button;
-    ArenaSolOQButton;
+    ArenaSoloQButton;
 }
 
 local MyGossipFrameUpdate = function(...)
     for _, button in ipairs(ARENA_SPECTATOR_BUTTONS) do
-        button.id = false;
         button:Hide();
     end
 
-    for numbericButton = 1, MAX_ARENA_SPECTATOR_BUTTONS do
-        local button = _G["GossipNewButton"..numbericButton];
-        button.id = false;
-        button:Hide();
-    end
-
-    wipe(data);
+    wipe(ARENA_TEAM_INFO);
 
     for i = 1, select("#", ...), 2 do
         local index = (i + 1) / 2;
@@ -288,11 +257,12 @@ local MyGossipFrameUpdate = function(...)
                     { left:match("(%d+)"), _left   },
                     { right:match("(%d+)"), _right },
                 }
-                tinsert(data, arenaInfo);
+                tinsert(ARENA_TEAM_INFO, arenaInfo);
             end
         end
     end
-    update();
+
+    ArenaSpectatorXGossipGreeting_Update();
 end
 
 local ARENA_SPECTATOR_FRAMES =
@@ -303,10 +273,10 @@ local ARENA_SPECTATOR_FRAMES =
     Back,
     GossipFrameGreetingPanelMaterialTopLeft,
     GossipFrameGreetingPanelMaterialTopRight,
-    _GossipGreeting
+    ArenaSpectatorXGossipGreeting
 };
 
-_GossipGreeting:SetScript("OnEvent", function()
+ArenaSpectatorXGossipGreeting:SetScript("OnEvent", function()
     if UnitName("npc") == "Arena Spectator" then
         GossipGreetingScrollFrame:SetSize(300, 400);
         GossipFrameGreetingPanel:SetSize(384, 578);
@@ -326,7 +296,8 @@ _GossipGreeting:SetScript("OnEvent", function()
         GossipFrameNpcNameText:SetPoint("LEFT", GossipNpcNameFrame, "LEFT", -40, 0);
         GossipFrameNpcNameText:SetText("|cff878787ArenaSpectatorX");
 
-        _GossipGreeting:Show();
+        ArenaSpectatorXGossipGreeting:Show();
+        ArenaSpectatorXGossipGreeting_Update();
 
         GossipGreetingText:Hide();
         GossipGreetingScrollFrameScrollBar:Hide();
@@ -336,6 +307,8 @@ _GossipGreeting:SetScript("OnEvent", function()
 
         MyGossipFrameUpdate(GetGossipOptions());
     else
+        wipe(ARENA_TEAM_INFO);
+
         for _, frame in ipairs(ARENA_SPECTATOR_FRAMES) do
             frame:Hide();
         end
@@ -351,6 +324,4 @@ _GossipGreeting:SetScript("OnEvent", function()
     end
 end)
 
-_GossipGreeting:RegisterEvent("GOSSIP_SHOW");
-
-
+ArenaSpectatorXGossipGreeting:RegisterEvent("GOSSIP_SHOW");
