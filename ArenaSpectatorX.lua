@@ -1,6 +1,9 @@
 ---@diagnostic disable: undefined-global
 
-local MAX_ARENA_SPECTATOR_BUTTONS = 10;
+---@class ArenaSpectatorXArenaTypeButtonTemplate
+---@field ArenaTypeText FontString
+
+local MAX_ARENASPECTATORX_BUTTONS = 10;
 
 local SPECIALIZATION_ICONS = {
     PWarrior  = "Interface\\Icons\\Ability_Warrior_DefensiveStance",
@@ -36,51 +39,18 @@ local SPECIALIZATION_ICONS = {
 }
 
 local ArenaSpectatorX = CreateFrame("Frame", "ArenaSpectatorX", GossipGreetingScrollFrame);
-ArenaSpectatorX:SetAllPoints();
+ArenaSpectatorX:SetSize(322, 403);
+ArenaSpectatorX:SetPoint("TOPLEFT");
 
 ArenaSpectatorX.Background = ArenaSpectatorX:CreateTexture("$parentBackground", "BACKGROUND");
 ArenaSpectatorX.Background:SetAllPoints();
 ArenaSpectatorX.Background:SetTexture("Interface\\AddOns\\ArenaSpectatorX\\texture\\UI-Background-Marble");
 
 ArenaSpectatorX.ScrollFrame = CreateFrame("ScrollFrame", "$parentScrollFrame", ArenaSpectatorX, "ArenaSpectatorXScrollFrameTemplate");
-ArenaSpectatorX.ScrollFrame:SetAllPoints();
+ArenaSpectatorX.ScrollFrame:SetSize(297, 403);
+ArenaSpectatorX.ScrollFrame:SetPoint("TOPLEFT");
 
 DynamicScrollFrame_CreateButtons(ArenaSpectatorXScrollFrame, "ArenaSpectatorXArenaNumButtonTemplate", 38)
-
-local function CreateButton(name)
-    local button = CreateFrame("Button", "$parent" .. name .. "Button", ArenaSpectatorX);
-
-    button:SetNormalTexture("Interface\\Buttons\\WHITE8X8");
-    button:GetNormalTexture():SetVertexColor(.155, .155, .155, 0.8);
-
-    button:SetHighlightTexture("Interface\\Buttons\\WHITE8X8");
-    button:GetHighlightTexture():SetVertexColor(.155, .155, .155, 0.6);
-
-    local text = button:CreateFontString(nil, "OVERLAY");
-    text:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE");
-    text:SetTextColor(.655, .655, .655, 1);
-    text:SetPoint("CENTER");
-    text:SetJustifyH("CENTER");
-    text:SetJustifyV("CENTER");
-
-    button.text = text;
-    button:SetFontString(text);
-
-    local function OnMouseDown(self)
-        self.text:SetPoint("CENTER", 0, 1);
-        self.text:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE");
-    end
-
-    local function OnMouseUp(self)
-        self.text:SetPoint("CENTER");
-        self.text:SetFont("Fonts\\FRIZQT__.TTF",11,"OUTLINE");
-    end
-
-    button:SetScript("OnMouseDown", OnMouseDown);
-    button:SetScript("OnMouseUp", OnMouseUp);
-
-    return button;
-end
 
 local ARENA_TEAM_INFO = {}
 
@@ -137,42 +107,33 @@ Back:SetScript("OnClick", function(self)
 end);
 
 local Arena1v1Button = CreateFrame("Button", "$parena1v1Button", ArenaSpectatorX, "ArenaSpectatorXArenaTypeButtonTemplate");
-Arena1v1Button:SetPoint("TOPLEFT", 1, -1);
+Arena1v1Button:SetPoint("TOPLEFT", 0, 0);
 Arena1v1Button.ArenaTypeText:SetText("1 против 1");
 
 local Arena2v2Button = CreateFrame("Button", "$parena2v2Button", ArenaSpectatorX, "ArenaSpectatorXArenaTypeButtonTemplate");
-Arena2v2Button:SetPoint("TOPLEFT", Arena1v1Button, "BOTTOMLEFT", 0, -1);
+Arena2v2Button:SetPoint("TOPLEFT", Arena1v1Button, "BOTTOMLEFT", 0, 0);
 Arena2v2Button.ArenaTypeText:SetText("2 против 2");
 
 local Arena3v3Button = CreateFrame("Button", "$parena3v3Button", ArenaSpectatorX, "ArenaSpectatorXArenaTypeButtonTemplate");
-Arena3v3Button:SetPoint("TOPLEFT", Arena2v2Button, "BOTTOMLEFT", 0, -1);
+Arena3v3Button:SetPoint("TOPLEFT", Arena2v2Button, "BOTTOMLEFT", 0, 0);
 Arena3v3Button.ArenaTypeText:SetText("3 против 3");
 
 local ArenaSoloQButton = CreateFrame("Button", "$parenaSoloQButton", ArenaSpectatorX, "ArenaSpectatorXArenaTypeButtonTemplate");
-ArenaSoloQButton:SetPoint("TOPLEFT", Arena3v3Button, "BOTTOMLEFT", 0, -1);
+ArenaSoloQButton:SetPoint("TOPLEFT", Arena3v3Button, "BOTTOMLEFT", 0, 0);
 ArenaSoloQButton.ArenaTypeText:SetText("SoloQ");
-
-
-local function razbit(text)
-    local tbl = {}
-    for s in text:gmatch("(%a+)") do
-        if SPECIALIZATION_ICONS[s] then tinsert(tbl,s) end
-    end
-    return tbl
-end
 
 function ArenaSpectatorXScrollFrame_Update()
     sort(ARENA_TEAM_INFO,function(a,b) return (a[1][1] + a[2][1]) > (b[1][1] + b[2][1]) end)
-    local numArenaTeams = MAX_ARENA_SPECTATOR_BUTTONS;
+    local numArenaTeams = MAX_ARENASPECTATORX_BUTTONS;
     local arenaTeamIndex = 0;
     local offset = FauxScrollFrame_GetOffset(ArenaSpectatorXScrollFrame);
     local button, arenaInfo;
 
-    for i = 1, MAX_ARENA_SPECTATOR_BUTTONS do
-        arenaInfo = ARENA_TEAM_INFO[i];
+    for i = 1, MAX_ARENASPECTATORX_BUTTONS do
         arenaTeamIndex = i + offset;
+        arenaInfo = ARENA_TEAM_INFO[arenaTeamIndex];
         button = _G["ArenaSpectatorXScrollFrameButton"..i];
-        if ( arenaTeamIndex > numArenaTeams or not arenaInfo ) then
+        if ( not arenaInfo ) then
             button:Hide();
         else
             button:Show();
@@ -188,10 +149,10 @@ function ArenaSpectatorXScrollFrame_Update()
         end
     end
 
-    FauxScrollFrame_Update(ArenaSpectatorXScrollFrame, numArenaTeams, MAX_ARENA_SPECTATOR_BUTTONS, 38, nil, nil, nil, nil, nil, nil, true);
+    FauxScrollFrame_Update(ArenaSpectatorXScrollFrame, numArenaTeams, MAX_ARENASPECTATORX_BUTTONS, 38, nil, nil, nil, nil, nil, nil, true);
 end
 
-local ARENA_SPECTATOR_BUTTONS =
+local ARENASPECTATORX_ALL_BUTTONS =
 {
     Refresh;
     Next;
@@ -203,7 +164,7 @@ local ARENA_SPECTATOR_BUTTONS =
     ArenaSoloQButton;
 }
 
-local ARENA_SPECTATOR_ARRENA_BUTTONS =
+local ARENASPECTATORX_ARENA_TYPE_BUTTONS =
 {
     Arena1v1Button;
     Arena2v2Button;
@@ -211,8 +172,16 @@ local ARENA_SPECTATOR_ARRENA_BUTTONS =
     ArenaSoloQButton;
 }
 
+local function getTeamInfo(text)
+    local tbl = {}
+    for s in text:gmatch("(%a+)") do
+        if SPECIALIZATION_ICONS[s] then tinsert(tbl,s) end
+    end
+    return tbl
+end
+
 local MyGossipFrameUpdate = function(...)
-    for _, button in ipairs(ARENA_SPECTATOR_BUTTONS) do
+    for _, button in ipairs(ARENASPECTATORX_ALL_BUTTONS) do
         button:Hide();
     end
 
@@ -223,7 +192,7 @@ local MyGossipFrameUpdate = function(...)
         local text = select(i, ...);
 
         if text:sub(1,3) == "1x1" then
-            for arenaID, button in ipairs(ARENA_SPECTATOR_ARRENA_BUTTONS) do
+            for arenaID, button in ipairs(ARENASPECTATORX_ARENA_TYPE_BUTTONS) do
                 button.id = arenaID;
                 button:Show();
             end
@@ -233,15 +202,11 @@ local MyGossipFrameUpdate = function(...)
         elseif text == "Prev..."  then Prev.id = index; Prev:Show();
         elseif text == "Back"     then Back.id = index; Back:Show();
         else
-            local left, right   = strsplit("-", text, 2);
-            local _left, _right = razbit(left or ""), razbit(right or "");
+            local left, right = strsplit("-", text, 2);
+            local team_info1, team_info2 = getTeamInfo(left or ""), getTeamInfo(right or "");
 
-            if #_left == #_right and #_left ~= 0 then
-                local arenaInfo = { id = index,
-                    { left:match("(%d+)"), _left   },
-                    { right:match("(%d+)"), _right },
-                }
-                tinsert(ARENA_TEAM_INFO, arenaInfo);
+            if #team_info1 == #team_info2 and #team_info1 ~= 0 then
+                tinsert(ARENA_TEAM_INFO, { id = index, { left:match("(%d+)"), team_info1 }, { right:match("(%d+)"), team_info2 } });
             end
         end
     end
@@ -249,15 +214,15 @@ local MyGossipFrameUpdate = function(...)
     ArenaSpectatorXScrollFrame_Update();
 end
 
-local ARENA_SPECTATOR_FRAMES =
+local ARENASPECTATOR_FRAMES =
 {
     Refresh,
     Next,
     Prev,
     Back,
+    ArenaSpectatorX,
     GossipFrameGreetingPanelMaterialTopLeft,
     GossipFrameGreetingPanelMaterialTopRight,
-    ArenaSpectatorX
 };
 
 ArenaSpectatorX:SetScript("OnEvent", function()
@@ -293,7 +258,7 @@ ArenaSpectatorX:SetScript("OnEvent", function()
     else
         wipe(ARENA_TEAM_INFO);
 
-        for _, frame in ipairs(ARENA_SPECTATOR_FRAMES) do
+        for _, frame in ipairs(ARENASPECTATOR_FRAMES) do
             frame:Hide();
         end
 
