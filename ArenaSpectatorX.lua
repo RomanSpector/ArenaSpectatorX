@@ -1,22 +1,5 @@
 ---@diagnostic disable: undefined-global
 
----@class ArenaSpectatorXSpecializationIconTemplate: Texture
----@class ArenaSpectatorXButtonFontTemplate: Font
-
----@class ArenaSpectatorXButtonTemplate: Button
----@field NormalTexture Texture
----@field HighlightTexture Texture
-
----@class ArenaSpectatorXArenaNumButtonTemplate: ArenaSpectatorXButtonTemplate
----@field RatingText ArenaSpectatorXButtonFontTemplate
----@field SpecializationIcon1 ArenaSpectatorXSpecializationIconTemplate
----@field SpecializationIcon2 ArenaSpectatorXSpecializationIconTemplate
----@field SpecializationIcon3 ArenaSpectatorXSpecializationIconTemplate
----@field SpecializationIcon4 ArenaSpectatorXSpecializationIconTemplate
----@field SpecializationIcon5 ArenaSpectatorXSpecializationIconTemplate
----@field SpecializationIcon6 ArenaSpectatorXSpecializationIconTemplate
-
-
 local MAX_ARENA_SPECTATOR_BUTTONS = 10;
 
 local SPECIALIZATION_ICONS = {
@@ -52,13 +35,20 @@ local SPECIALIZATION_ICONS = {
     SHunt     = "Interface\\Icons\\Ability_Hunter_SwiftStrike",
 }
 
-local ArenaSpectatorXGossipGreeting = CreateFrame("ScrollFrame", "ArenaSpectatorXGossipGreeting", GossipGreetingScrollFrame, "ArenaSpectatorXScrollFrameTemplate");
-ArenaSpectatorXGossipGreeting:SetPoint("TOPLEFT");
+local ArenaSpectatorX = CreateFrame("Frame", "ArenaSpectatorX", GossipGreetingScrollFrame);
+ArenaSpectatorX:SetAllPoints();
 
-DynamicScrollFrame_CreateButtons(ArenaSpectatorXGossipGreeting, "ArenaSpectatorXArenaNumButtonTemplate", 38)
+ArenaSpectatorX.Background = ArenaSpectatorX:CreateTexture("$parentBackground", "BACKGROUND");
+ArenaSpectatorX.Background:SetAllPoints();
+ArenaSpectatorX.Background:SetTexture("Interface\\AddOns\\ArenaSpectatorX\\texture\\UI-Background-Marble");
 
-local function CreateButton(i)
-    local button = CreateFrame("Button", (i and "GossipNewButton"..i), ArenaSpectatorXGossipGreeting);
+ArenaSpectatorX.ScrollFrame = CreateFrame("ScrollFrame", "$parentScrollFrame", ArenaSpectatorX, "ArenaSpectatorXScrollFrameTemplate");
+ArenaSpectatorX.ScrollFrame:SetAllPoints();
+
+DynamicScrollFrame_CreateButtons(ArenaSpectatorXScrollFrame, "ArenaSpectatorXArenaNumButtonTemplate", 38)
+
+local function CreateButton(name)
+    local button = CreateFrame("Button", "$parent" .. name .. "Button", ArenaSpectatorX);
 
     button:SetNormalTexture("Interface\\Buttons\\WHITE8X8");
     button:GetNormalTexture():SetVertexColor(.155, .155, .155, 0.8);
@@ -97,7 +87,8 @@ local ARENA_TEAM_INFO = {}
 local function OnClick(self)
     wipe(ARENA_TEAM_INFO);
     SelectGossipOption(self.id)
-    ArenaSpectatorXGossipGreeting_Update();
+    ArenaSpectatorX.ScrollFrame:Show();
+    ArenaSpectatorXScrollFrame_Update();
 end
 
 local Refresh = CreateFrame("Button", "GossipRefresh", GossipFrame, "UIPanelButtonTemplate");
@@ -106,7 +97,7 @@ Refresh:SetPoint("TOP", 0, -50);
 Refresh:SetText("Обновить");
 Refresh:SetScript("OnClick",function(self)
     SelectGossipOption(self.id);
-    ArenaSpectatorXGossipGreeting_Update();
+    ArenaSpectatorXScrollFrame_Update();
     self:Disable();
     local timeSinceUpdate = 0;
     self:SetScript("OnUpdate", function(this, elapsede)
@@ -139,30 +130,34 @@ Back:SetSize(53,22);
 Back:SetPoint("RIGHT", Refresh, "LEFT", -24, 0);
 Back:SetText("Назад");
 Back:Hide();
-Back:SetScript("OnClick", OnClick);
+Back:SetScript("OnClick", function(self)
+    wipe(ARENA_TEAM_INFO);
+    SelectGossipOption(self.id);
+    ArenaSpectatorX.ScrollFrame:Hide();
+end);
 
-local Arena1v1Button = CreateButton();
+local Arena1v1Button = CreateButton("1v1");
 Arena1v1Button:SetSize(320, 99);
 Arena1v1Button:SetPoint("TOPLEFT",1,-1);
 Arena1v1Button:SetText("( 1 против 1 )");
 Arena1v1Button:SetScript("OnClick", OnClick);
 Arena1v1Button:Hide();
 
-local Arena2v2Button = CreateButton();
+local Arena2v2Button = CreateButton("2v2");
 Arena2v2Button:SetSize(320, 99);
 Arena2v2Button:SetPoint("TOPLEFT", Arena1v1Button, "BOTTOMLEFT", 0, -1);
 Arena2v2Button:SetText("( 2 против 2 )");
 Arena2v2Button:SetScript("OnClick", OnClick);
 Arena2v2Button:Hide();
 
-local Arena3v3Button = CreateButton();
+local Arena3v3Button = CreateButton("3v3");
 Arena3v3Button:SetSize(320, 99);
 Arena3v3Button:SetPoint("TOPLEFT", Arena2v2Button, "BOTTOMLEFT", 0, -1);
 Arena3v3Button:SetText("( 3 против 3 )");
 Arena3v3Button:SetScript("OnClick", OnClick);
 Arena3v3Button:Hide();
 
-local ArenaSoloQButton = CreateButton();
+local ArenaSoloQButton = CreateButton("SoloQ");
 ArenaSoloQButton:SetSize(320, 99);
 ArenaSoloQButton:SetPoint("TOPLEFT", Arena3v3Button, "BOTTOMLEFT", 0, -1);
 ArenaSoloQButton:SetText("( SoloQ )");
@@ -177,17 +172,17 @@ local function razbit(text)
     return tbl
 end
 
-function ArenaSpectatorXGossipGreeting_Update()
+function ArenaSpectatorXScrollFrame_Update()
     sort(ARENA_TEAM_INFO,function(a,b) return (a[1][1] + a[2][1]) > (b[1][1] + b[2][1]) end)
     local numArenaTeams = MAX_ARENA_SPECTATOR_BUTTONS;
     local arenaTeamIndex = 0;
-    local offset = FauxScrollFrame_GetOffset(ArenaSpectatorXGossipGreeting);
+    local offset = FauxScrollFrame_GetOffset(ArenaSpectatorXScrollFrame);
     local button, arenaInfo;
 
     for i = 1, MAX_ARENA_SPECTATOR_BUTTONS do
         arenaInfo = ARENA_TEAM_INFO[i];
         arenaTeamIndex = i + offset;
-        button = _G["ArenaSpectatorXGossipGreetingButton"..i];
+        button = _G["ArenaSpectatorXScrollFrameButton"..i];
         if ( arenaTeamIndex > numArenaTeams or not arenaInfo ) then
             button:Hide();
         else
@@ -204,7 +199,7 @@ function ArenaSpectatorXGossipGreeting_Update()
         end
     end
 
-    FauxScrollFrame_Update(ArenaSpectatorXGossipGreeting, numArenaTeams, MAX_ARENA_SPECTATOR_BUTTONS, 38, nil, nil, nil, nil, nil, nil, true);
+    FauxScrollFrame_Update(ArenaSpectatorXScrollFrame, numArenaTeams, MAX_ARENA_SPECTATOR_BUTTONS, 38, nil, nil, nil, nil, nil, nil, true);
 end
 
 local ARENA_SPECTATOR_BUTTONS =
@@ -262,7 +257,7 @@ local MyGossipFrameUpdate = function(...)
         end
     end
 
-    ArenaSpectatorXGossipGreeting_Update();
+    ArenaSpectatorXScrollFrame_Update();
 end
 
 local ARENA_SPECTATOR_FRAMES =
@@ -273,10 +268,10 @@ local ARENA_SPECTATOR_FRAMES =
     Back,
     GossipFrameGreetingPanelMaterialTopLeft,
     GossipFrameGreetingPanelMaterialTopRight,
-    ArenaSpectatorXGossipGreeting
+    ArenaSpectatorX
 };
 
-ArenaSpectatorXGossipGreeting:SetScript("OnEvent", function()
+ArenaSpectatorX:SetScript("OnEvent", function()
     if UnitName("npc") == "Arena Spectator" then
         GossipGreetingScrollFrame:SetSize(300, 400);
         GossipFrameGreetingPanel:SetSize(384, 578);
@@ -296,8 +291,8 @@ ArenaSpectatorXGossipGreeting:SetScript("OnEvent", function()
         GossipFrameNpcNameText:SetPoint("LEFT", GossipNpcNameFrame, "LEFT", -40, 0);
         GossipFrameNpcNameText:SetText("|cff878787ArenaSpectatorX");
 
-        ArenaSpectatorXGossipGreeting:Show();
-        ArenaSpectatorXGossipGreeting_Update();
+        ArenaSpectatorX:Show();
+        ArenaSpectatorX.ScrollFrame:Hide();
 
         GossipGreetingText:Hide();
         GossipGreetingScrollFrameScrollBar:Hide();
@@ -313,6 +308,7 @@ ArenaSpectatorXGossipGreeting:SetScript("OnEvent", function()
             frame:Hide();
         end
 
+        ArenaSpectatorX.ScrollFrame:Hide();
         GossipGreetingScrollFrame:SetSize(300, 334);
         GossipFrameGreetingPanel:SetSize(384, 512);
         GossipGreetingScrollFrameScrollBar:Show();
@@ -324,4 +320,4 @@ ArenaSpectatorXGossipGreeting:SetScript("OnEvent", function()
     end
 end)
 
-ArenaSpectatorXGossipGreeting:RegisterEvent("GOSSIP_SHOW");
+ArenaSpectatorX:RegisterEvent("GOSSIP_SHOW");

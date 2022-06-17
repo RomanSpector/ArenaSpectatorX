@@ -128,13 +128,12 @@
         end
       </OnMouseUp>
       <OnClick>
-        SelectGossipOption(self.id);
+        SelectGossipOption(self.arenaID);
       </OnClick>
     </Scripts>
   </Button>
 
-  <ScrollFrame name="ArenaSpectatorXScrollFrameTemplate" inherits="FauxScrollFrameTemplate" virtual="true">
-    <Size x="300" y="403" />
+  <ScrollFrame name="ArenaSpectatorXScrollFrameTemplate" inherits="FauxScrollFrameTemplate" hidden="true" virtual="true">
     <Layers>
       <Layer level="BACKGROUND">
         <Texture parentKey="Background" file="Interface\AddOns\ArenaSpectatorX\texture\UI-Background-Marble" setAllPoints="true" />
@@ -177,7 +176,7 @@
     </ScrollChild>
     <Scripts>
       <OnVerticalScroll>
-      FauxScrollFrame_OnVerticalScroll(self, offset, FRIENDS_FRAME_IGNORE_HEIGHT, ArenaSpectatorXGossipGreeting_Update);
+      FauxScrollFrame_OnVerticalScroll(self, offset, 38, ArenaSpectatorXScrollFrame_Update);
       </OnVerticalScroll>
     </Scripts>
   </ScrollFrame>
