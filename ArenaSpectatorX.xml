@@ -7,44 +7,6 @@
     <Size x="24" y="24" />
   </Texture>
 
-  <Button name="ArenaSpectatorXButtonTemplate" virtual="true">
-    <NormalTexture file="Interface\Buttons\WHITE8X8" parentKey="NormalTexture">
-      <Color r="0.155" g="0.155" b="0.155" a="0.9" />
-    </NormalTexture>
-    <!-- <HighlightTexture file="Interface\Buttons\WHITE8X8" alphaMode="ADD" parentKey="HighlightTexture">
-      <Color r="0.155" g="0.155" b="0.155" a="0.3" />
-    </HighlightTexture> -->
-    <Layers>
-      <Layer level="HIGHLIGHT">
-        <Texture name="$parentLeft" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Left-Hi">
-          <Size>
-            <AbsDimension x="32" y="60" />
-          </Size>
-          <Anchors>
-            <Anchor point="TOPLEFT" x="-3" y="3" />
-          </Anchors>
-        </Texture>
-        <Texture name="$parentRight" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Right-Hi">
-          <Size>
-            <AbsDimension x="32" y="60" />
-          </Size>
-          <Anchors>
-            <Anchor point="TOPRIGHT" x="3" y="3" />
-          </Anchors>
-        </Texture>
-        <Texture name="$parentMiddle" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Mid-Hi">
-          <Size>
-            <AbsDimension x="32" y="60" />
-          </Size>
-          <Anchors>
-            <Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0" />
-            <Anchor point="TOPRIGHT" relativeTo="$parentRight" relativePoint="TOPLEFT" x="0" y="0" />
-          </Anchors>
-        </Texture>
-      </Layer>
-    </Layers>
-  </Button>
-
   <FontString name="ArenaSpectatorXButtonFontTemplate" font="Fonts\MORPHEUS.ttf" virtual="true">
     <FontHeight val="14" />
     <Anchors>
@@ -53,21 +15,33 @@
     <Color r="0.655" g="0.655" b="0.655" a="1" />
   </FontString>
 
-  <Button name="ArenaSpectatorXArenaTypeButtonTemplate" inherits="ArenaSpectatorXButtonTemplate" hidden="true" virtual="true">
+  <Button name="ArenaSpectatorXArenaTypeButtonTemplate" hidden="true" virtual="true">
     <Size x="320" y="99" />
     <Layers>
       <Layer level="ARTWORK">
-        <FontString name="$parentArenaTypeText" inherits="ArenaSpectatorXButtonFontTemplate" parentKey="ArenaTypeText" />
+        <FontString name="$parentArenaTypeText" font="Fonts\MORPHEUS.ttf" parentKey="ArenaTypeText">
+          <FontHeight val="38" />
+          <Anchors>
+            <Anchor point="CENTER" x="0" y="0" />
+          </Anchors>
+          <Color r="0.655" g="0.655" b="0.655" a="1" />
+        </FontString>
       </Layer>
     </Layers>
     <Scripts>
       <OnClick>
-         SelectGossipOption(self.arenaID);
+         SelectGossipOption(self.id);
       </OnClick>
     </Scripts>
+    <NormalTexture file="Interface\Buttons\WHITE8X8" parentKey="NormalTexture">
+      <Color r="0.155" g="0.155" b="0.155" a="0.9" />
+    </NormalTexture>
+    <HighlightTexture file="Interface\Buttons\WHITE8X8" alphaMode="ADD" parentKey="HighlightTexture">
+      <Color r="0.155" g="0.155" b="0.155" a="0.3" />
+    </HighlightTexture>
   </Button>
 
-  <Button name="ArenaSpectatorXArenaNumButtonTemplate" inherits="ArenaSpectatorXButtonTemplate" hidden="true" virtual="true">
+  <Button name="ArenaSpectatorXArenaNumButtonTemplate" hidden="true" virtual="true">
     <Size x="320" y="38" />
     <Layers>
       <Layer level="OVERLAY">
@@ -131,6 +105,41 @@
         SelectGossipOption(self.arenaID);
       </OnClick>
     </Scripts>
+    <NormalTexture file="Interface\Buttons\WHITE8X8" parentKey="NormalTexture">
+      <Color r="0.155" g="0.155" b="0.155" a="0.9" />
+    </NormalTexture>
+    <!-- <HighlightTexture file="Interface\Buttons\WHITE8X8" alphaMode="ADD" parentKey="HighlightTexture">
+      <Color r="0.155" g="0.155" b="0.155" a="0.3" />
+    </HighlightTexture> -->
+    <Layers>
+      <Layer level="HIGHLIGHT">
+        <Texture name="$parentLeft" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Left-Hi">
+          <Size>
+            <AbsDimension x="32" y="60" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" x="-3" y="3" />
+          </Anchors>
+        </Texture>
+        <Texture name="$parentRight" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Right-Hi">
+          <Size>
+            <AbsDimension x="32" y="60" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOPRIGHT" x="3" y="3" />
+          </Anchors>
+        </Texture>
+        <Texture name="$parentMiddle" file="Interface\AddOns\ArenaSpectatorX\texture\UI-SilverButtonLG-Mid-Hi">
+          <Size>
+            <AbsDimension x="32" y="60" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parentLeft" relativePoint="TOPRIGHT" x="0" y="0" />
+            <Anchor point="TOPRIGHT" relativeTo="$parentRight" relativePoint="TOPLEFT" x="0" y="0" />
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
   </Button>
 
   <ScrollFrame name="ArenaSpectatorXScrollFrameTemplate" inherits="FauxScrollFrameTemplate" hidden="true" virtual="true">

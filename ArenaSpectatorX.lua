@@ -136,33 +136,22 @@ Back:SetScript("OnClick", function(self)
     ArenaSpectatorX.ScrollFrame:Hide();
 end);
 
-local Arena1v1Button = CreateButton("1v1");
-Arena1v1Button:SetSize(320, 99);
-Arena1v1Button:SetPoint("TOPLEFT",1,-1);
-Arena1v1Button:SetText("( 1 против 1 )");
-Arena1v1Button:SetScript("OnClick", OnClick);
-Arena1v1Button:Hide();
+local Arena1v1Button = CreateFrame("Button", "$parena1v1Button", ArenaSpectatorX, "ArenaSpectatorXArenaTypeButtonTemplate");
+Arena1v1Button:SetPoint("TOPLEFT", 1, -1);
+Arena1v1Button.ArenaTypeText:SetText("1 против 1");
 
-local Arena2v2Button = CreateButton("2v2");
-Arena2v2Button:SetSize(320, 99);
+local Arena2v2Button = CreateFrame("Button", "$parena2v2Button", ArenaSpectatorX, "ArenaSpectatorXArenaTypeButtonTemplate");
 Arena2v2Button:SetPoint("TOPLEFT", Arena1v1Button, "BOTTOMLEFT", 0, -1);
-Arena2v2Button:SetText("( 2 против 2 )");
-Arena2v2Button:SetScript("OnClick", OnClick);
-Arena2v2Button:Hide();
+Arena2v2Button.ArenaTypeText:SetText("2 против 2");
 
-local Arena3v3Button = CreateButton("3v3");
-Arena3v3Button:SetSize(320, 99);
+local Arena3v3Button = CreateFrame("Button", "$parena3v3Button", ArenaSpectatorX, "ArenaSpectatorXArenaTypeButtonTemplate");
 Arena3v3Button:SetPoint("TOPLEFT", Arena2v2Button, "BOTTOMLEFT", 0, -1);
-Arena3v3Button:SetText("( 3 против 3 )");
-Arena3v3Button:SetScript("OnClick", OnClick);
-Arena3v3Button:Hide();
+Arena3v3Button.ArenaTypeText:SetText("3 против 3");
 
-local ArenaSoloQButton = CreateButton("SoloQ");
-ArenaSoloQButton:SetSize(320, 99);
+local ArenaSoloQButton = CreateFrame("Button", "$parenaSoloQButton", ArenaSpectatorX, "ArenaSpectatorXArenaTypeButtonTemplate");
 ArenaSoloQButton:SetPoint("TOPLEFT", Arena3v3Button, "BOTTOMLEFT", 0, -1);
-ArenaSoloQButton:SetText("( SoloQ )");
-ArenaSoloQButton:SetScript("OnClick", OnClick);
-ArenaSoloQButton:Hide();
+ArenaSoloQButton.ArenaTypeText:SetText("SoloQ");
+
 
 local function razbit(text)
     local tbl = {}
